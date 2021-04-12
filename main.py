@@ -10,21 +10,18 @@ import numpy as np
 import sys
 from PIL import Image
 
-video_frames = []
 
 def extractFramesFromVideo(video_path, temp_location):
+    video_frames = []
     print('[1] Processing video.')
     video = cv2.VideoCapture(video_path)
-    if os.path.exists(temp_location):
-        print('Temp directory already exists. Move or delete it.')
-        return (False, 0)
     framerate = video.get(cv2.CAP_PROP_FPS)
     
     i = 1
     while(video.isOpened()):
         ret, frame = video.read()
         if ret == False:
-            return (True, framerate)
+            break
         dimension = os.get_terminal_size()
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         frame = cv2.resize(frame, (dimension.columns - 1, dimension.lines), interpolation=cv2.INTER_AREA)
@@ -33,10 +30,11 @@ def extractFramesFromVideo(video_path, temp_location):
         print('\r        Processed frame: '+str(i), end='')
         i+=1
 
+    return (video_frames, framerate)
     video.release()
     cv2.destroyAllWindows()
 
-def processFrames(frames_dir):
+def processFrames(video_frames):
     print('\n[2] Processing frames.')
     frames = []
     images = video_frames
@@ -70,13 +68,10 @@ def main():
     temp_directory = current_directory+'\\temp\\'
     video_file_name = input("Enter file name: ")
     
-    ret, framerate = extractFramesFromVideo(current_directory+'/'+video_file_name, temp_directory)
+    video_frames, framerate = extractFramesFromVideo(current_directory+'/'+video_file_name, temp_directory)
     frametime = 1/(framerate)
 
-    if ret == False:
-        return
-
-    frames = processFrames(temp_directory)
+    frames = processFrames(video_frames)
 
     input("\nPress any key to play")
     start = time.time()
