@@ -72,7 +72,7 @@ def main():
 
     frames = processFrames(video_frames)
 
-    input("\nPress any key to play")
+    input("\nPress enter to play")
     start = time.time()
     elapsed_time_start = start
     i = 0
