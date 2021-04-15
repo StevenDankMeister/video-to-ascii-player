@@ -17,7 +17,7 @@ def extractFramesFromVideo(video_path, temp_location):
     video = cv2.VideoCapture(video_path)
     framerate = video.get(cv2.CAP_PROP_FPS)
     
-    i = 1
+    count = 1
     while(video.isOpened()):
         ret, frame = video.read()
         if ret == False:
@@ -25,14 +25,13 @@ def extractFramesFromVideo(video_path, temp_location):
         dimension = os.get_terminal_size()
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         frame = cv2.resize(frame, (dimension.columns - 1, dimension.lines), interpolation=cv2.INTER_AREA)
-        #cv2.imwrite(temp_location+str(i)+'.jpg', frame)
         video_frames.append(frame)
-        print('\r        Processed frame: '+str(i), end='')
-        i+=1
+        print('\r        Processed frame: '+str(count), end='')
+        count += 1
 
-    return (video_frames, framerate)
     video.release()
     cv2.destroyAllWindows()
+    return (video_frames, framerate)
 
 def processFrames(video_frames):
     print('\n[2] Processing frames.')
